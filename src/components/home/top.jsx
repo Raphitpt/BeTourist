@@ -6,6 +6,7 @@ export default function Top() {
   const [locations, setLocations] = useState([]);
   const [city, setCity] = useState("");
   const [error, setError] = useState("");
+  const googleApiKey = import.meta.env.GOOGLE_API_KEY;
 
   useEffect(() => {
     let watchId;
@@ -43,7 +44,7 @@ export default function Top() {
   useEffect(() => {
     if (locations.length > 0) {
       setDefaults({
-        key: "AIzaSyDl1lhnrUdghkWhrlBHo9yf9_4sNKuc9Jg",
+        key: googleApiKey,
         language: "fr",
         region: "fr",
       });

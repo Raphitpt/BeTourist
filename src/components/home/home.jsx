@@ -6,7 +6,8 @@ import { Loupe, Micro } from "../../assets/icon/Icon";
 import Card from "../card/card";
 
 const fetchTripadvisorData = async (searchTerm) => {
-  const url = `https://api.content.tripadvisor.com/api/v1/location/search?key=9BBAD07536B447B8B46F629DB4DEE13F&searchQuery=${encodeURIComponent(
+  const apiKey = import.meta.env.API_TRIPADVISOR_KEY;
+  const url = `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${encodeURIComponent(
     searchTerm
   )}&language=en`;
   const options = { method: "GET", headers: { accept: "application/json" } };
