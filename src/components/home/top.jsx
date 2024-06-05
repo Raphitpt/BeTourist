@@ -1,28 +1,88 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Location } from "../../assets/icon/Icon";
-import { useGeolocated } from "react-geolocated";
+import { geocode, setDefaults, RequestType } from "react-geocode";
 
 export default function Top() {
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
-    useGeolocated({
-      positionOptions: {
-        enableHighAccuracy: false,
-      },
-      userDecisionTimeout: 10000,
-    });
-  return !isGeolocationAvailable ? (
-    <div>Your browser does not support Geolocation</div>
-  ) : !isGeolocationEnabled ? (
-    <div>Geolocation is not enabled</div>
-  ) : coords ? (
+  const [locations, setLocations] = useState([]);
+  const [city, setCity] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let watchId;
+
+    const appendLocation = (location, verb = "updated") => {
+      const newLocation = {
+        verb,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setLocations((prevLocations) => [...prevLocations, newLocation]);
+    };
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (location) => appendLocation(location, "fetched"),
+        (err) => setError(err.message)
+      );
+      watchId = navigator.geolocation.watchPosition(
+        (location) => appendLocation(location),
+        (err) => setError(err.message)
+      );
+    } else {
+      setError("Geolocation API not supported.");
+    }
+
+    // Cleanup the watchPosition on component unmount
+    return () => {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (locations.length > 0) {
+      setDefaults({
+        key: "AIzaSyDl1lhnrUdghkWhrlBHo9yf9_4sNKuc9Jg",
+        language: "fr",
+        region: "fr",
+      });
+
+      const lat = locations[locations.length - 1].latitude.toString();
+      const lng = locations[locations.length - 1].longitude.toString();
+
+      geocode(RequestType.LATLNG, `${lat},${lng}`, {
+        result_type: "locality",
+      })
+        .then(({ results }) => {
+          if (results.length > 0 && results[0].address_components.length > 1) {
+            setCity(results[0].address_components[0].long_name);
+          } else {
+            setError("Unable to fetch city name.");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setError("Failed to fetch city name.");
+        });
+    }
+  }, [locations]);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!locations.length) {
+    return <div>Loading...</div>;
+  }
+
+  return (
     <div style={styles.header}>
       <div style={styles.header__left}>
         <Location />
-        <h1 style={styles.header__content}>Top</h1>
+        <h1 style={styles.header__content}>{city || "Impossible"}</h1>
       </div>
     </div>
-  ) : (
-    <div>Getting the location data&hellip; </div>
   );
 }
 
