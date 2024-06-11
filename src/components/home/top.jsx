@@ -6,6 +6,7 @@ export default function Top({ locality }) {
   const [locations, setLocations] = useState([]);
   const [city, setCity] = useState("");
   const [error, setError] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     let watchId;
@@ -19,14 +20,21 @@ export default function Top({ locality }) {
       setLocations((prevLocations) => [...prevLocations, newLocation]);
     };
 
+    const successHandler = (location) => {
+      appendLocation(location, "fetched");
+      setShowPopup(false);
+    };
+
+    const errorHandler = (err) => {
+      setError(err.message);
+      setShowPopup(true);
+    };
+
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (location) => appendLocation(location, "fetched"),
-        (err) => setError(err.message)
-      );
+      navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
       watchId = navigator.geolocation.watchPosition(
-        (location) => appendLocation(location),
-        (err) => setError(err.message)
+        successHandler,
+        errorHandler
       );
     } else {
       setError("Geolocation API not supported.");
@@ -78,6 +86,14 @@ export default function Top({ locality }) {
 
   return (
     <div style={styles.header}>
+      {showPopup && (
+        <div style={styles.popup}>
+          <p>
+            La géolocalisation est désactivée. Veuillez l'activer pour afficher
+            votre emplacement.
+          </p>
+        </div>
+      )}
       <div style={styles.header__left}>
         <Location />
         <h1 style={styles.header__content}>{city || "Impossible"}</h1>
@@ -101,5 +117,15 @@ const styles = {
   header__content: {
     fontFamily: "SFProDisplay",
     fontWeight: "700",
+  },
+  popup: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    background: "#ffffff",
+    padding: "20px",
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+    zIndex: "999",
   },
 };
