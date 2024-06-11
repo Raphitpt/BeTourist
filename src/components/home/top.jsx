@@ -50,7 +50,7 @@ export default function Top({ locality }) {
   useEffect(() => {
     if (locations.length > 0) {
       setDefaults({
-        key: import.meta.env.VITE_GOOGLE_PLACES_API_KEY,
+        key: import.meta.env.VITE_GOOGLE_PLACES_API_KEY || process.env.VITE_GOOGLE_PLACES_API_KEY,
         language: "fr",
         region: "fr",
       });
