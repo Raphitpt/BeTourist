@@ -8,6 +8,7 @@ import Home from "./components/home/home";
 import Maps from "./components/maps/maps";
 import DetailCard from "./components/card/detailCard";
 import "./fonts.css";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
