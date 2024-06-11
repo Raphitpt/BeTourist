@@ -5,6 +5,8 @@ import "regenerator-runtime/runtime";
 import Root from "./routes/root";
 import CssBaseline from "@mui/material/CssBaseline";
 import Home from "./components/home/home";
+import Maps from "./components/maps/maps";
+import DetailCard from "./components/card/detailCard";
 import "./fonts.css";
 
 const router = createBrowserRouter([
@@ -18,7 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/maps",
-        element: <h1>Maps</h1>,
+        element: <Maps />,
       },
       {
         path: "/nearby",
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
         element: <h1>History</h1>,
       },
     ],
+  },
+  {
+    path: "/page/:id",
+    element: <DetailCard />,
+  },
+  {
+    path: "*",
+    element: <h1>Not Found</h1>,
   },
 ]);
 

@@ -4,6 +4,7 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import { Home, Plan, Location, Bookmarks } from "../../assets/icon/Icon";
 import { Paper } from "@mui/material";
 import { isIOS, isMobile } from "react-device-detect";
+import { Link } from "react-router-dom";
 
 export default function LabelBottomNavigation() {
   const [value, setValue] = React.useState("home");
@@ -35,12 +36,16 @@ export default function LabelBottomNavigation() {
           icon={
             value === "home" ? <Home fill="#252525" /> : <Home fill="#BEBEBE" />
           }
+          component={Link}
+          to="/"
         />
         <BottomNavigationAction
           value="maps"
           icon={
             value === "maps" ? <Plan fill="#252525" /> : <Plan fill="#BEBEBE" />
           }
+          component={Link}
+          to="/maps"
         />
         <BottomNavigationAction
           value="nearby"

@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Location } from "../../assets/icon/Icon";
 import { geocode, setDefaults, RequestType } from "react-geocode";
 
-export default function Top() {
+export default function Top({ locality }) {
   const [locations, setLocations] = useState([]);
   const [city, setCity] = useState("");
   const [error, setError] = useState("");
-  const googleApiKey = import.meta.env.GOOGLE_API_KEY;
 
   useEffect(() => {
     let watchId;
@@ -33,7 +32,6 @@ export default function Top() {
       setError("Geolocation API not supported.");
     }
 
-    // Cleanup the watchPosition on component unmount
     return () => {
       if (watchId) {
         navigator.geolocation.clearWatch(watchId);
@@ -44,7 +42,7 @@ export default function Top() {
   useEffect(() => {
     if (locations.length > 0) {
       setDefaults({
-        key: googleApiKey,
+        key: import.meta.env.VITE_GOOGLE_PLACES_API_KEY,
         language: "fr",
         region: "fr",
       });
@@ -58,6 +56,7 @@ export default function Top() {
         .then(({ results }) => {
           if (results.length > 0 && results[0].address_components.length > 1) {
             setCity(results[0].address_components[0].long_name);
+            locality(results[0].address_components[0].long_name);
           } else {
             setError("Unable to fetch city name.");
           }

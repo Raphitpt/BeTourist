@@ -5,7 +5,6 @@ import RouterBottomNavigation from "../components/menu/menu";
 export default function Root() {
   return (
     <>
-      <Top />
       <Outlet />
       <RouterBottomNavigation />
     </>
