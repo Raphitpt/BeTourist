@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import MapModal from "./MapModal";
+import { useNavigate } from "react-router-dom";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoicmFwaGl0aXRpIiwiYSI6ImNsZ3k0andyMDA1enEzZW05YjhtbnMzYXUifQ.kG7eG6VUDiHTfAbqGA74lg"; // Remplacez par votre token Mapbox
+const GOOGLE_MAPS_API_KEY =
+  import.meta.env.VITE_GOOGLE_PLACES_API_KEY ||
+  process.env.VITE_GOOGLE_PLACES_API_KEY; // Remplacez par votre clé API Google Maps
 
 const Maps = () => {
   const mapContainerRef = useRef(null);
@@ -13,8 +16,8 @@ const Maps = () => {
     latitude: 45.65,
     longitude: 0.15,
   }); // Default location
-  const [featureName, setFeatureName] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  let navigate = useNavigate();
 
   useEffect(() => {
     mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -23,26 +26,14 @@ const Maps = () => {
       style: "mapbox://styles/raphititi/clx1tr61a01rg01qs3ycedsti",
       center: [userLocation.longitude, userLocation.latitude],
       zoom: 13,
-      attributionControl: false,
     });
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
-        // When active the map will receive updates to the device's location as it changes.
-        trackUserLocation: true,
-        // Draw an arrow next to the location dot to indicate which direction the device is heading.
-        showUserHeading: true,
-      })
-    );
 
     mapRef.current = map;
 
     map.on("load", () => {
       console.log("Map loaded");
 
-      map.on("click", (e) => {
+      map.on("click", async (e) => {
         console.log("Map clicked at", e.lngLat);
 
         const features = map.queryRenderedFeatures(e.point, {
@@ -53,13 +44,14 @@ const Maps = () => {
 
         if (features.length > 0) {
           const feature = features[0];
-          setFeatureName(feature.properties.name || "No name available");
-          setIsModalOpen(true);
+          setSelectedPlace(feature);
+          // const placeData = await fetchPlaceData(
+          //   feature.geometry.coordinates,
+          //   feature.properties.name
+          // );
+          navigate(`/place/12`);
         }
       });
-
-      // Scroll event listener
-      window.addEventListener("scroll", handleScroll);
     });
 
     // Get user location
@@ -79,25 +71,47 @@ const Maps = () => {
     }
 
     // Clean up on unmount
-    return () => {
-      map.remove();
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => map.remove();
   }, []);
 
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-
-    if (documentHeight - (scrollY + windowHeight) < 50) {
-      // Adjust this threshold as needed
-      setIsModalOpen(true);
+  const fetchPlaceData = async (coordinates, name) => {
+    try {
+      const response = await fetch(
+        "https://places.googleapis.com/v1/places:searchText",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
+            "X-Goog-FieldMask": "places.displayName,places.formattedAddress",
+          },
+          body: JSON.stringify({
+            textQuery: name,
+            locationBias: {
+              circle: {
+                center: {
+                  latitude: coordinates[1],
+                  longitude: coordinates[0],
+                },
+                radius: 500.0,
+              },
+            },
+          }),
+        }
+      );
+      const data = await response.json();
+      if (data && data.places && data.places.length > 0) {
+        // Dans cet exemple, nous renvoyons simplement le premier résultat
+        return data.places[0];
+      }
+    } catch (error) {
+      console.error("Error fetching place data:", error);
     }
+    return null;
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
+    setModalData(null);
   };
 
   return (
@@ -105,11 +119,6 @@ const Maps = () => {
       <div
         ref={mapContainerRef}
         style={{ width: "100%", height: "calc(100vh - 80px)" }}
-      />
-      <MapModal
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        featureName={featureName}
       />
     </>
   );

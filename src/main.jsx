@@ -7,8 +7,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Home from "./components/home/home";
 import Maps from "./components/maps/maps";
 import DetailCard from "./components/card/detailCard";
+import PlaceDetail from "./components/place/placeDetail"; // Importez correctement placeDetail
 import "./fonts.css";
 import "./index.css";
+import "./transitions.css";
 
 const router = createBrowserRouter([
   {
@@ -24,10 +26,6 @@ const router = createBrowserRouter([
         element: <Maps />,
       },
       {
-        path: "/nearby",
-        element: <h1>Nearby</h1>,
-      },
-      {
         path: "/history",
         element: <h1>History</h1>,
       },
@@ -36,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/page/:id",
     element: <DetailCard />,
+  },
+  {
+    path: "/place/:id",
+    element: <PlaceDetail />,
   },
   {
     path: "*",

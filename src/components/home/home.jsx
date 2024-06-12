@@ -29,7 +29,7 @@ const Home = () => {
         text: `Restaurants`,
       },
       imageUrl:
-        "https://nolinskiparis.com/wp-content/uploads/2022/06/restaurant-nolinski-paris-5-etoiles-luxe-12-guillaume-de-laubier.jpg",
+        "/assets/image/restaurant-nolinski-paris-5-etoiles-luxe-12-guillaume-de-laubier.webp",
       bookmarks: false,
     },
     {
@@ -37,8 +37,7 @@ const Home = () => {
       displayName: {
         text: "Hôtels",
       },
-      imageUrl:
-        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/184305239.jpg?k=2d22fe63ae1f8960e057238c98fb436f7bd9f65854e3a5e918607c5cfa1d0a52&o=&hp=1",
+      imageUrl: "/assets/image/184305239.webp",
       bookmarks: false,
     },
     {
@@ -46,17 +45,15 @@ const Home = () => {
       displayName: {
         text: "Musées",
       },
-      imageUrl:
-        "https://www.wien.info/resource/image/296568/3x2/894/596/c84661c3e062eefb6ae724bed2c0de56/475D53C1018447DEFE10732BC2D9A715/dom-museum-wien-2017-ausstellungsansicht.webp",
+      imageUrl: "/assets/image/dom-museum-wien-2017-ausstellungsansicht.webp",
       bookmarks: false,
     },
     {
-      id: "national_park",
+      id: "park",
       displayName: {
         text: "Parcs",
       },
-      imageUrl:
-        "https://metropole.toulouse.fr/sites/toulouse-fr/files/styles/paragraphe_image/public/2022-09/bandeau_jardin_royal.jpg.webp?itok=Sqc8rOi1",
+      imageUrl: "/assets/image/bandeau_jardin_royal.jpg.webp",
       bookmarks: false,
     },
     {
@@ -64,8 +61,7 @@ const Home = () => {
       displayName: {
         text: "Cinémas",
       },
-      imageUrl:
-        "https://media.gqmagazine.fr/photos/603e6a8da9360b0585bcbc6a/16:9/w_2560%2Cc_limit/108387402",
+      imageUrl: "/assets/image/9_w_2560%2Cc_limit_108387402.webp",
       bookmarks: false,
     },
     {
@@ -73,8 +69,7 @@ const Home = () => {
       displayName: {
         text: "Boutiques",
       },
-      imageUrl:
-        "https://eggo-agencement.fr/wp-content/uploads/2023/07/boutique-vetements-clair-eggo.jpg",
+      imageUrl: "/assets/image/boutique-vetements-clair-eggo.webp",
       bookmarks: false,
     },
     {
@@ -82,8 +77,7 @@ const Home = () => {
       displayName: {
         text: "Salles de sport",
       },
-      imageUrl:
-        "https://www.pariscountryclub.com/wp-content/uploads/2022/12/pcc-actus-debuter-salle-sport.jpg",
+      imageUrl: "/assets/image/pcc-actus-debuter-salle-sport.webp",
       bookmarks: false,
     },
     {
@@ -91,8 +85,7 @@ const Home = () => {
       displayName: {
         text: "Stations essence",
       },
-      imageUrl:
-        "https://www.lagazettedescommunes.com/wp-content/uploads/Station_service_lambda_Fotolia.jpg",
+      imageUrl: "/assets/image/Station_service_lambda_Fotolia.webp",
       bookmarks: false,
     },
   ];

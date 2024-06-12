@@ -29,6 +29,7 @@ export default function LabelBottomNavigation() {
         right: 0,
         paddingBottom: paddingBottom,
       }}
+      elevation={5}
     >
       <BottomNavigation value={value} onChange={handleChange} className="">
         <BottomNavigationAction
@@ -47,16 +48,7 @@ export default function LabelBottomNavigation() {
           component={Link}
           to="/maps"
         />
-        <BottomNavigationAction
-          value="nearby"
-          icon={
-            value === "nearby" ? (
-              <Location fill="#252525" />
-            ) : (
-              <Location fill="#BEBEBE" />
-            )
-          }
-        />
+
         <BottomNavigationAction
           value="history"
           icon={
