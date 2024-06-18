@@ -73,6 +73,7 @@ const bookmarks = () => {
       <div style={styles.container}>
         <h1 style={styles.title}>Signets</h1>
         <div>
+          {bookmarks.length === 0 && <p>Vous n'avez pas de signets.</p>}
           {bookmarks.map((data) => (
             <div key={data.displayName.text} style={styles.card}>
               <div style={styles.cardLeft}>
