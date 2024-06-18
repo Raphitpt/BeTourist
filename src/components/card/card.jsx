@@ -23,7 +23,6 @@ const Card = (data) => {
       ></div>
       <div className="card-overlay" style={styles.cardOverlay}></div>
       <div style={styles.cardTop}>
-        <Restaurant fill="#FFF" width="25" height="25" />
         {data.data.bookmarks && <Bookmarks fill="#FFF" />}
       </div>
       <div style={styles.cardBottom}>

@@ -6,6 +6,7 @@ import Root from "./routes/root";
 import CssBaseline from "@mui/material/CssBaseline";
 import Home from "./components/home/home";
 import Maps from "./components/maps/maps";
+import Bookmarks from "./components/bookmarks/bookmarks";
 import DetailCard from "./components/card/detailCard";
 import PlaceDetail from "./components/place/placeDetail"; // Importez correctement placeDetail
 import "./fonts.css";
@@ -26,8 +27,8 @@ const router = createBrowserRouter([
         element: <Maps />,
       },
       {
-        path: "/history",
-        element: <h1>History</h1>,
+        path: "/bookmarks",
+        element: <Bookmarks />,
       },
     ],
   },

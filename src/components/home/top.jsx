@@ -50,7 +50,9 @@ export default function Top({ locality }) {
   useEffect(() => {
     if (locations.length > 0) {
       setDefaults({
-        key: import.meta.env.VITE_GOOGLE_PLACES_API_KEY || process.env.VITE_GOOGLE_PLACES_API_KEY,
+        key:
+          import.meta.env.VITE_GOOGLE_PLACES_API_KEY ||
+          process.env.VITE_GOOGLE_PLACES_API_KEY,
         language: "fr",
         region: "fr",
       });
@@ -107,6 +109,8 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     padding: "10px",
+    maxWidth: 1000,
+    margin: "0 auto",
   },
   header__left: {
     display: "flex",
@@ -116,7 +120,9 @@ const styles = {
   header__right: {},
   header__content: {
     fontFamily: "SFProDisplay",
-    fontWeight: "700",
+    fontWeight: 700,
+    fontSize: "2rem",
+    color: "#00AF87",
   },
   popup: {
     position: "absolute",

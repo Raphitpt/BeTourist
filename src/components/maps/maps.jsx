@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import mapboxgl from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useNavigate } from "react-router-dom";
+import { Loupe, Micro } from "../../assets/icon/Icon";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 const MAPBOX_TOKEN =
-  "pk.eyJ1IjoicmFwaGl0aXRpIiwiYSI6ImNsZ3k0andyMDA1enEzZW05YjhtbnMzYXUifQ.kG7eG6VUDiHTfAbqGA74lg"; // Remplacez par votre token Mapbox
-const GOOGLE_MAPS_API_KEY =
-  import.meta.env.VITE_GOOGLE_PLACES_API_KEY ||
-  process.env.VITE_GOOGLE_PLACES_API_KEY; // Remplacez par votre clé API Google Maps
+  "pk.eyJ1IjoicmFwaGl0aXRpIiwiYSI6ImNsZ3k0andyMDA1enEzZW05YjhtbnMzYXUifQ.kG7eG6VUDiHTfAbqGA74lg"; // Replace with your Mapbox token
 
 const Maps = () => {
   const mapContainerRef = useRef(null);
@@ -15,9 +16,16 @@ const Maps = () => {
   const [userLocation, setUserLocation] = useState({
     latitude: 45.65,
     longitude: 0.15,
-  }); // Default location
-  const [selectedPlace, setSelectedPlace] = useState(null);
-  let navigate = useNavigate();
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const geocoderRef = useRef(null);
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+    isMicrophoneAvailable,
+  } = useSpeechRecognition();
 
   useEffect(() => {
     mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -30,92 +38,119 @@ const Maps = () => {
 
     mapRef.current = map;
 
-    map.on("load", () => {
-      console.log("Map loaded");
+    // Add geolocate control
+    const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      fitBoundsOptions: {
+        linear: false,
+      },
+      trackUserLocation: false,
+    });
+    map.addControl(geolocate);
 
-      map.on("click", async (e) => {
-        console.log("Map clicked at", e.lngLat);
+    // Add search control
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: true,
+      placeholder: "Rechercher un lieu",
+      countries: "fr", // Limite la recherche à la France
+      types: "poi", // Définition correcte avec un tableau de chaînes de caractères
+    });
+    document.getElementById("searchInput").appendChild(geocoder.onAdd(map));
 
-        const features = map.queryRenderedFeatures(e.point, {
-          layers: ["poi-label"],
-        });
-
-        console.log("Features found:", features);
-
-        if (features.length > 0) {
-          const feature = features[0];
-          setSelectedPlace(feature);
-          // const placeData = await fetchPlaceData(
-          //   feature.geometry.coordinates,
-          //   feature.properties.name
-          // );
-          navigate(`/place/12`);
-        }
+    // Handle search result selection
+    geocoder.on("result", async (e) => {
+      const coordinates = e.result.geometry.coordinates;
+      map.flyTo({
+        center: coordinates,
+        essential: true, // Ensures a smooth animation
+        zoom: 15, // You can adjust the zoom level as needed
       });
     });
 
-    // Get user location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-          map.setCenter([position.coords.longitude, position.coords.latitude]);
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    }
+    // Trigger geolocation after adding geolocate control to map
+    geolocate.trigger();
 
     // Clean up on unmount
     return () => map.remove();
-  }, []);
+  }, [MAPBOX_TOKEN, userLocation]);
 
-  const fetchPlaceData = async (coordinates, name) => {
-    try {
-      const response = await fetch(
-        "https://places.googleapis.com/v1/places:searchText",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
-            "X-Goog-FieldMask": "places.displayName,places.formattedAddress",
-          },
-          body: JSON.stringify({
-            textQuery: name,
-            locationBias: {
-              circle: {
-                center: {
-                  latitude: coordinates[1],
-                  longitude: coordinates[0],
-                },
-                radius: 500.0,
-              },
-            },
-          }),
-        }
-      );
-      const data = await response.json();
-      if (data && data.places && data.places.length > 0) {
-        // Dans cet exemple, nous renvoyons simplement le premier résultat
-        return data.places[0];
-      }
-    } catch (error) {
-      console.error("Error fetching place data:", error);
-    }
-    return null;
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
   };
 
-  const closeModal = () => {
-    setModalData(null);
+  const handleMicroClick = () => {
+    resetTranscript();
+    SpeechRecognition.startListening({ language: "fr-FR" });
   };
+
+  if (!browserSupportsSpeechRecognition) {
+    return (
+      <span>
+        La reconnaissance vocale n'est pas prise en charge par ce navigateur.
+      </span>
+    );
+  }
+
+  if (!isMicrophoneAvailable) {
+    return (
+      <span>
+        Microphone non disponible. Veuillez vérifier vos paramètres de
+        microphone.
+      </span>
+    );
+  }
 
   return (
     <>
+      <div
+        style={{
+          position: "absolute",
+          top: 10,
+          left: 10,
+          zIndex: 1,
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: "#fff",
+          padding: "5px 10px",
+          borderRadius: "5px",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <Loupe fill="#00AF87" />
+        <input
+          id="searchInput"
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          style={{
+            border: "none",
+            outline: "none",
+            marginLeft: "10px",
+            width: "200px",
+          }}
+          placeholder="Rechercher"
+        />
+        <Micro
+          style={{ marginLeft: "10px", cursor: "pointer" }}
+          onClick={handleMicroClick}
+          fill="#00AF87"
+        />
+      </div>
+      {listening && (
+        <div
+          style={{
+            color: "green",
+            textAlign: "center",
+            marginTop: "10px",
+          }}
+        >
+          Écoute en cours...
+        </div>
+      )}
       <div
         ref={mapContainerRef}
         style={{ width: "100%", height: "calc(100vh - 80px)" }}

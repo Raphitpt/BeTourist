@@ -127,6 +127,20 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
 .mapboxgl-ctrl-bottom-left {
   display: none;
+}
+html,
+body {
+  background-color: #faf9f7;
+}
+
+/* Media queries */
+@media screen and (max-width: 400px) {
+  .home__gridcard {
+    /* margin: 0 auto;
+    width: 90%; */
+    grid-template-columns: 1fr !important;
+  }
 }

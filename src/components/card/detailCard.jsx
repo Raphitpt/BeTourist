@@ -28,7 +28,7 @@ const DetailCard = () => {
         },
       },
       rankPreference: "POPULARITY",
-      // excludedTypes: ["fast_food_restaurant"],
+      excludedTypes: ["fast_food_restaurant"],
     };
     const headers = {
       "Content-Type": "application/json",
@@ -66,7 +66,6 @@ const DetailCard = () => {
     fetchPlaces(card.id)
       .then((response) => {
         setCardList(response);
-        console.log(response);
       })
       .catch((error) => {
         console.error("Error fetching places:", error);
@@ -75,6 +74,37 @@ const DetailCard = () => {
 
   const handleBack = () => {
     window.history.back();
+  };
+  const handleGoToMaps = (link) => {
+    const confirmed = window.confirm(
+      "Vous allez être redirigé vers Google Maps. Continuer ?"
+    );
+    if (confirmed) {
+      window.location.href = link;
+    }
+  };
+  const handleBookmark = (data) => {
+    if (!data || !data.formattedAddress) {
+      console.log("Invalid data");
+      return;
+    }
+
+    let bookmarkHistoryArray = JSON.parse(
+      localStorage.getItem("bookmarks") || "[]"
+    );
+
+    // Check if the bookmark already exists in the array
+    const exists = bookmarkHistoryArray.some(
+      (bookmark) => bookmark.formattedAddress === data.formattedAddress
+    );
+
+    if (!exists) {
+      bookmarkHistoryArray.push(data);
+      console.log("Saved in local storage");
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarkHistoryArray));
+    } else {
+      console.log("Bookmark already exists");
+    }
   };
 
   if (cardList.length === 0) {
@@ -109,7 +139,7 @@ const DetailCard = () => {
       </div>
       <div>
         {cardList.map((data) => (
-          <div key={data.id} style={styles.card}>
+          <div key={data.displayName.text} style={styles.card}>
             <div style={styles.cardLeft}>
               {data.photos && (
                 <img
@@ -141,14 +171,17 @@ const DetailCard = () => {
                   </div>
                 </div>
               </div>
-              <div style={styles.cardLocation}>
+              <div
+                style={styles.cardLocation}
+                onClick={() => handleGoToMaps(data.googleMapsUri)}
+              >
                 <div>
                   <LocationFill />
                 </div>
                 <p>{data.formattedAddress}</p>
               </div>
             </div>
-            <div style={styles.cardRight}>
+            <div style={styles.cardRight} onClick={() => handleBookmark(data)}>
               <Bookmarks />
             </div>
           </div>
@@ -166,6 +199,8 @@ const styles = {
     height: "200px",
     position: "relative",
     overflow: "hidden",
+    maxWidth: 1000,
+    margin: "0 auto",
   },
   topTitle: {
     fontFamily: "SFProDisplay",
@@ -211,6 +246,7 @@ const styles = {
     alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 10,
+    maxWidth: 500,
   },
   cardLeft: {
     backgroundColor: "#BEBEBE",

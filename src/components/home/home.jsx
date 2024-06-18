@@ -3,25 +3,31 @@ import axios from "axios";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { Loupe, Micro } from "../../assets/icon/Icon";
+
 import Card from "../card/card";
 import Top from "./top";
+import { usePlacesWidget } from "react-google-autocomplete";
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [locality, setLocality] = useState("");
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-    isMicrophoneAvailable,
-  } = useSpeechRecognition();
+
+  const { ref } = usePlacesWidget({
+    apiKey:
+      import.meta.env.VITE_GOOGLE_PLACES_API_KEY ||
+      process.env.VITE_GOOGLE_PLACES_API_KEY,
+    onPlaceSelected: (place) => {
+      handleLocation(place.formatted_address); // Update the locality based on the selected place
+    },
+    options: {
+      types: ["(regions)"],
+      componentRestrictions: { country: "fr" },
+    },
+  });
 
   function handleLocation(data) {
-    setLocality(data);
+    setLocality(data); // Update the locality state with the selected place's formatted address
   }
-
   const data = [
     {
       id: "restaurant",
@@ -90,96 +96,80 @@ const Home = () => {
     },
   ];
 
-  if (!browserSupportsSpeechRecognition) {
-    return (
-      <span>
-        La reconnaissance vocale n'est pas prise en charge par ce navigateur.
-      </span>
-    );
-  }
-
-  if (!isMicrophoneAvailable) {
-    return (
-      <span>
-        Microphone non disponible. Veuillez vérifier vos paramètres de
-        microphone.
-      </span>
-    );
-  }
-
-  const handleMicroClick = () => {
-    resetTranscript();
-    SpeechRecognition.startListening({ language: "fr-FR" });
-  };
-
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
   return (
-    <>
-      <Top locality={handleLocation} />
+    <div style={styles.backgroundContainer}>
+      <div style={styles.top}>
+        <h1 style={styles.title}>BeTourist</h1>
+        <h2>
+          La première application utile pour le tourisme, après{" "}
+          <b>GoogleMaps</b>, <b>Tripadvisor</b>, <b>Booking</b> ....
+        </h2>
+      </div>
+
       <div style={styles.container}>
-        <div style={styles.search}>
-          <Loupe />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleInputChange}
-            style={styles.searchInput}
-            placeholder="Rechercher"
-          />
-          <Micro style={styles.micro} onClick={handleMicroClick} />
-        </div>
-        {listening && <div style={styles.listening}>Écoute en cours...</div>}
-        <p>Recommendations aux alentours de {locality}</p>
-        <div style={styles.cardGrid}>
+        <p style={styles.advisor}>
+          Pour plus de praticité, l'application est optimisée pour les mobiles.
+        </p>
+        <Top locality={handleLocation} />
+        <p style={styles.description}>
+          Voici les recommandations aux alentours de {locality}
+        </p>
+        <div style={styles.cardGrid} className="home__gridcard">
           {data.map((place) => (
             <Card key={place.id} data={place} />
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
 const styles = {
+  backgroundContainer: {
+    backgroundColor: "#faf9f7",
+  },
+  top: {
+    width: "90%",
+    margin: "0 auto",
+    maxWidth: 1000,
+    marginBlock: "2rem",
+  },
+  title: {
+    fontFamily: "SFProDisplay",
+    fontWeight: 700,
+    fontSize: "3rem",
+    color: "#00AF87",
+  },
   container: {
     width: "90%",
     margin: "0 auto",
     marginBottom: "6rem",
+    maxWidth: 1000,
+    // minWidth: 360,
   },
-  search: {
-    margin: "0 auto",
-    display: "flex",
-    padding: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "20px",
-    alignItems: "center",
-    gap: "10px",
-    marginBottom: "2rem",
-  },
-  searchInput: {
-    border: "none",
-    outline: "none",
-    color: "#252525",
-    fontFamily: "SFProDisplay",
-    fontWeight: "600",
-  },
-  micro: {
-    marginLeft: "auto",
-    cursor: "pointer",
-  },
-  listening: {
-    color: "green",
-    textAlign: "center",
-    marginTop: "10px",
-  },
+
   cardGrid: {
     padding: "10px",
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gap: "17px",
+  },
+  description: {
+    color: "#373737",
+    fontFamily: "SFProDisplay",
+    textAlign: "center",
+    fontWeight: 600,
+  },
+  advisor: {
+    textAlign: "center",
+    fontWeight: 700,
+    fontSize: "1rem",
+    fontFamily: "SFProDisplay",
+    marginBottom: 10,
   },
 };
 

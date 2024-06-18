@@ -7,7 +7,9 @@ import { isIOS, isMobile } from "react-device-detect";
 import { Link } from "react-router-dom";
 
 export default function LabelBottomNavigation() {
-  const [value, setValue] = React.useState("home");
+  const pathname = window.location.pathname;
+
+  const [value, setValue] = React.useState(pathname.substring(1) || "home");
   const [paddingBottom, setPaddingBottom] = React.useState(0);
 
   React.useEffect(() => {
@@ -50,14 +52,16 @@ export default function LabelBottomNavigation() {
         />
 
         <BottomNavigationAction
-          value="history"
+          value="bookmarks"
           icon={
-            value === "history" ? (
+            value === "bookmarks" ? (
               <Bookmarks fill="#252525" />
             ) : (
               <Bookmarks fill="#BEBEBE" />
             )
           }
+          component={Link}
+          to="/bookmarks"
         />
       </BottomNavigation>
     </Paper>
