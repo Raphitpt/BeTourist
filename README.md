@@ -29,6 +29,9 @@ La première application utile pour le tourisme, après GoogleMaps, Tripadvisor,
 </p>
 <hr>
 
+## Démonstration : <a href="https://locationpoi.netlify.app/">BeTourist<a>
+
+
 ## 🔗 Liens Rapides
 
 > - [📍 Aperçu](#-aperçu)
