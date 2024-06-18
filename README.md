@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" width="100" />
+  <img src="[https://cdn-icons-png.flaticon.com/512/6295/6295417.png](https://github.com/Raphitpt/BeTourist/blob/main/public/pwa-512x512.png)" width="100" />
 </p>
 <p align="center">
     <h1 align="center">BETOURIST</h1>
