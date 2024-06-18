@@ -17,12 +17,34 @@ const Maps = () => {
   const [isListening, setIsListening] = useState(false);
   const [currentQuery, setCurrentQuery] = useState("");
 
+  const geolocateUser = (map) => {
+    const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      fitBoundsOptions: {
+        linear: false,
+      },
+      trackUserLocation: false,
+    });
+    map.addControl(geolocate);
+    map.on("load", function () {
+      geolocate.trigger();
+    });
+    geolocate.on("geolocate", function (e) {
+      map.flyTo({
+        zoom: 15,
+        center: [e.coords.longitude, e.coords.latitude],
+      });
+    });
+  };
+
   useEffect(() => {
     mapboxgl.accessToken = MAPBOX_TOKEN;
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [-79.4512, 43.6568],
+      center: [0.15, 45.65],
       zoom: 13,
     });
 
@@ -39,7 +61,7 @@ const Maps = () => {
 
     map.addControl(geocoder);
     geocoderRef.current = geocoder;
-
+    geolocateUser(map);
     return () => {
       map.remove();
     };
