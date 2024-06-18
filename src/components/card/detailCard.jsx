@@ -6,13 +6,14 @@ import {
   LocationFill,
   Stars,
   Bookmarks,
+  BookmarksFill,
 } from "../../assets/icon/Icon";
 
 const DetailCard = () => {
   const { state } = useLocation();
   const [cardList, setCardList] = useState([]);
-  const card = state;
-
+  const [bookmarks, setBookmarks] = useState([]);
+  const card = state.data;
   const fetchPlaces = async (query) => {
     const url = `https://places.googleapis.com/v1/places:searchNearby`;
     const dataQuery = {
@@ -21,8 +22,8 @@ const DetailCard = () => {
       locationRestriction: {
         circle: {
           center: {
-            latitude: 45.648186,
-            longitude: 0.139799,
+            latitude: state.lat,
+            longitude: state.lng,
           },
           radius: 10000,
         },
@@ -72,6 +73,13 @@ const DetailCard = () => {
       });
   }, [card.id]);
 
+  useEffect(() => {
+    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+    if (savedBookmarks) {
+      setBookmarks(savedBookmarks);
+    }
+  }, []);
+
   const handleBack = () => {
     window.history.back();
   };
@@ -94,16 +102,35 @@ const DetailCard = () => {
     );
 
     // Check if the bookmark already exists in the array
-    const exists = bookmarkHistoryArray.some(
+    const existingIndex = bookmarkHistoryArray.findIndex(
       (bookmark) => bookmark.formattedAddress === data.formattedAddress
     );
 
-    if (!exists) {
+    if (existingIndex === -1) {
+      // Bookmark does not exist, add it
       bookmarkHistoryArray.push(data);
       console.log("Saved in local storage");
-      localStorage.setItem("bookmarks", JSON.stringify(bookmarkHistoryArray));
     } else {
-      console.log("Bookmark already exists");
+      // Bookmark already exists, remove it
+      bookmarkHistoryArray.splice(existingIndex, 1);
+      console.log("Removed existing bookmark");
+    }
+
+    // Update localStorage with the modified array
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarkHistoryArray));
+    reloadLocalstorage();
+  };
+
+  const isBookmarked = (formattedAddress) => {
+    return bookmarks.some(
+      (bookmark) => bookmark.formattedAddress === formattedAddress
+    );
+  };
+
+  const reloadLocalstorage = () => {
+    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+    if (savedBookmarks) {
+      setBookmarks(savedBookmarks);
     }
   };
 
@@ -182,7 +209,11 @@ const DetailCard = () => {
               </div>
             </div>
             <div style={styles.cardRight} onClick={() => handleBookmark(data)}>
-              <Bookmarks />
+              {isBookmarked(data.formattedAddress) ? (
+                <BookmarksFill />
+              ) : (
+                <Bookmarks />
+              )}
             </div>
           </div>
         ))}

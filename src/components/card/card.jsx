@@ -1,15 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Importer useNavigate
-import zIndex from "@mui/material/styles/zIndex";
+import { useNavigate } from "react-router-dom";
 import { Bookmarks, Restaurant } from "../../assets/icon/Icon";
 
-const Card = (data) => {
-  const navigate = useNavigate(); // Utiliser useNavigate pour la navigation
+const Card = ({ data, lat, lng }) => {
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    // Définir l'URL de la page vers laquelle vous voulez naviguer
-    const targetUrl = `/page/${data.data.id}`; // Exemple : `/page/123`
-    navigate(targetUrl, { state: data.data });
+    const targetUrl = `/page/${data.id}`;
+    navigate(targetUrl, { state: { data, lat, lng } });
   };
 
   return (
@@ -18,16 +16,16 @@ const Card = (data) => {
         className="card-background"
         style={{
           ...styles.cardBackground,
-          backgroundImage: `url(${data.data.imageUrl})`,
+          backgroundImage: `url(${data.imageUrl})`,
         }}
       ></div>
       <div className="card-overlay" style={styles.cardOverlay}></div>
       <div style={styles.cardTop}>
-        {data.data.bookmarks && <Bookmarks fill="#FFF" />}
+        {data.bookmarks && <Bookmarks fill="#FFF" />}
       </div>
       <div style={styles.cardBottom}>
         <h2 style={styles.cardText}>
-          {data.data.displayName.text || "Hôtel de Ville"}
+          {data.displayName.text || "Hôtel de Ville"}
         </h2>
       </div>
     </div>

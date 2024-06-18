@@ -1,17 +1,51 @@
 import React from "react";
-import { LocationFill, Stars, Bookmarks } from "../../assets/icon/Icon";
+import {
+  LocationFill,
+  Stars,
+  Bookmarks,
+  BookmarksFill,
+} from "../../assets/icon/Icon"; // Assurez-vous d'avoir une icône remplie
 
 const bookmarks = () => {
   const [bookmarks, setBookmarks] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
-    if (bookmarks) {
-      setBookmarks(bookmarks);
+    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+    if (savedBookmarks) {
+      console.log(savedBookmarks);
+      setBookmarks(savedBookmarks);
     }
     setLoading(false);
   }, []);
+
+  const handleGoToMaps = (link) => {
+    const confirmed = window.confirm(
+      "Vous allez être redirigé vers Google Maps. Continuer ?"
+    );
+    if (confirmed) {
+      window.location.href = link;
+    }
+  };
+
+  const handleBookmark = (data) => {
+    const updatedBookmarks = bookmarks.find(
+      (bookmark) => bookmark.formattedAddress === data.formattedAddress
+    )
+      ? bookmarks.filter(
+          (bookmark) => bookmark.formattedAddress !== data.formattedAddress
+        )
+      : [...bookmarks, data];
+
+    setBookmarks(updatedBookmarks);
+    localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+  };
+
+  const isBookmarked = (formattedAddress) => {
+    return bookmarks.some(
+      (bookmark) => bookmark.formattedAddress === formattedAddress
+    );
+  };
 
   const getPriceLevel = (priceLevel) => {
     switch (priceLevel) {
@@ -33,6 +67,7 @@ const bookmarks = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
+
   return (
     <div style={styles.backgroundContainer}>
       <div style={styles.container}>
@@ -85,7 +120,11 @@ const bookmarks = () => {
                 style={styles.cardRight}
                 onClick={() => handleBookmark(data)}
               >
-                <Bookmarks />
+                {isBookmarked(data.formattedAddress) ? (
+                  <BookmarksFill />
+                ) : (
+                  <Bookmarks />
+                )}
               </div>
             </div>
           ))}
