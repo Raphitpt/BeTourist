@@ -5,7 +5,8 @@
     <h1 align="center">BETOURIST</h1>
 </p>
 <p align="center">
-    <em>Explore offline. Enhance experiences. BeTourist.</em>
+    <em>
+La première application utile pour le tourisme, après GoogleMaps, Tripadvisor, Booking ....</em>
 </p>
 <p align="center">
 	<img src="https://img.shields.io/github/license/Raphitpt/BeTourist?style=flat&color=0080ff" alt="license">
@@ -14,7 +15,7 @@
 	<img src="https://img.shields.io/github/languages/count/Raphitpt/BeTourist?style=flat&color=0080ff" alt="repo-language-count">
 <p>
 <p align="center">
-		<em>Developed with the software and tools below.</em>
+		<em>Développé avec les logiciels et langages suivants :</em>
 </p>
 <p align="center">
 	<img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black" alt="JavaScript">
@@ -31,8 +32,7 @@
 ## 🔗 Liens Rapides
 
 > - [📍 Aperçu](#-aperçu)
-> - [📂 Structure du Répertoire](#-structure-du-répertoire)
->   [🧩 Modules](#-pour-commencer)
+> - [📂 Structure du Répertoire](#-structure-du-répertoire) > [🧩 Modules](#-pour-commencer)
 > - [🚀 Pour Commencer](#-pour-commencer)
 >   - [⚙️ Installation](#️-installation)
 >   - [🤖 Exécution de BeTourist](#-exécution-de-betourist)
