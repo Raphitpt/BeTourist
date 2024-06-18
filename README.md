@@ -44,10 +44,10 @@ La première application utile pour le tourisme, après GoogleMaps, Tripadvisor,
 
 ## 📍 Aperçu
 
-BeTourist est une application web (PWA), compatible IOS, Android, Windows, Mac. L'application est téléchargeable. Elle est optimisé pour les appareils mobile.<br>
-Son but, aider les touristes à voir les points d'intérêt aux alentours de sa position. La personne est donc géolocaliser, elle peut retrouver les points d'intérêts de 8 catégories pour le moment. (Pour une futur version de l'application, le mieux ce serait de laisser choisir les catégories à l'utilisateurs).<br>
+BeTourist est une application web (PWA), compatible IOS, Android, Windows, Mac. L'application est téléchargeable. Elle est optimisé pour les appareils mobile.<br><br>
+Son but, aider les touristes à voir les points d'intérêt aux alentours de sa position. La personne est donc géolocaliser, elle peut retrouver les points d'intérêts de 8 catégories pour le moment. (Pour une futur version de l'application, le mieux ce serait de laisser choisir les catégories à l'utilisateurs).<br><br>
 L'application propose une carte avec une barre de recherche qui est aussi accessible avec une recherche vocal (Pas disponible sur tout les navigateurs). Lorsque l'utilisateurs clique sur un points d'intérêt sur la carte, une alerte apparaît lui demandans si il autorise à voir la fiche établissement sur Google Maps. (L'intégration n'est pas faîte à cause du prix de l'api Google 😥)
-<br>
+<br><br>
 Si un lieu plaît à l'utilisateurs, il peux l'ajouter en signet, donc il s'enregistre en local storage sur l'appareil, et il peux le retrouver dans son onglet.
 
 ---
