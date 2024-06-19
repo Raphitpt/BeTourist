@@ -96,7 +96,14 @@ const Home = () => {
     };
 
     const errorHandler = (err) => {
-      setError(err.message);
+      if (err.code === 1) {
+        err.messageFR = "La géolocalisation est désactivée.";
+      } else if (err.code === 2) {
+        err.messageFR = "Impossible de récupérer votre position actuelle.";
+      } else if (err.code === 3) {
+        err.messageFR = "Timeout.";
+      }
+      setError(err.messageFR);
       setShowPopup(true);
     };
 
@@ -157,11 +164,36 @@ const Home = () => {
   };
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div style={styles.backgroundContainer}>
+        <div style={styles.top}>
+          <h1 style={styles.title}>Erreur</h1>
+          <h2>
+            Une erreur est survenue lors de la récupération de votre
+            localisation. <br /> Veuillez vérifier que vous avez autorisé la
+            localisation dans vos paramètres puis rafraîchissez la page. <br />
+            Il se peut aussi que votre navigateur ne prenne pas en charge la
+            localisation, auquel cas, vous ne pourrez pas utiliser
+            l'application.
+          </h2>
+          <br />
+          <h3>
+            <strong>Détail de l'erreur :</strong> {error}
+          </h3>
+        </div>
+      </div>
+    );
   }
 
   if (!locations.length) {
-    return <div>Chargement...</div>;
+    return (
+      <div style={styles.backgroundContainer}>
+        <div style={styles.top}>
+          <h1 style={styles.title}>Chargement en cours</h1>
+          <h2>Veuillez patientez.</h2>
+        </div>
+      </div>
+    );
   }
 
   return (
