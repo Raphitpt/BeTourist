@@ -136,6 +136,24 @@ body {
   background-color: #faf9f7;
 }
 
+.mapboxgl-ctrl-geocoder {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.micro-icon-container {
+  position: absolute;
+  right: 0; /* Ajustez la position horizontale selon vos besoins */
+}
+
+.micro-icon {
+  width: 24px; /* Ajustez la taille de l'icône selon vos besoins */
+  height: 24px;
+  cursor: pointer;
+  margin-right: 10px; /* Espace à droite de l'icône */
+}
+
 /* Media queries */
 @media screen and (max-width: 400px) {
   .home__gridcard {
